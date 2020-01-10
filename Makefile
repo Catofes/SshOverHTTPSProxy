@@ -1,3 +1,3 @@
 all:
 	mkdir -p build
-	go build -o build/SshOverHTTPS github.com/Catofes/SshOverHTTPS
+	env GO111MODULE=on CGO_ENABLED=0 go build -o build/SshOverHTTPS .
