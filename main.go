@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 )
@@ -34,15 +35,16 @@ func main() {
 
 	_, err = conn.Write([]byte(requestHead))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	buffer := make([]byte, 1500)
 	n, err := conn.Read(buffer)
 	response := string(buffer[:n])
 	response = strings.TrimSpace(response)
-	if response != "HTTP/1.1 200 OK" {
-		log.Fatal(response)
+	reg := regexp.MustCompile("^HTTP/1\\.1\\ 200")
+	if !reg.Match([]byte(response)) {
+		log.Fatal("Unconnect err:", response)
 	}
 
 	wg := sync.WaitGroup{}
