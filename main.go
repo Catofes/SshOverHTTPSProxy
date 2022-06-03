@@ -20,12 +20,12 @@ func main() {
 
 	conn, err := tls.Dial("tcp", *proxyAddress, nil)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("dail err:", err)
 	}
 	err = conn.Handshake()
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("handshake err:", err)
 	}
 
 	requestHead := fmt.Sprintf("CONNECT %s HTTP/1.1\r\n"+
@@ -35,7 +35,7 @@ func main() {
 
 	_, err = conn.Write([]byte(requestHead))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("request error:", err)
 	}
 
 	buffer := make([]byte, 1500)
@@ -44,7 +44,7 @@ func main() {
 	response = strings.TrimSpace(response)
 	reg := regexp.MustCompile("^HTTP/1\\.1\\ 200")
 	if !reg.Match([]byte(response)) {
-		log.Fatal("Unconnect err:", response)
+		log.Fatal("connect err:", response)
 	}
 
 	wg := sync.WaitGroup{}
